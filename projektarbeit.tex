@@ -1,0 +1,477 @@
+%------------------------------------
+% DIPLOMARBEIT: Hauptdatei Dokument
+% Version 1.2
+%     
+% Stefan Grünwald (2000 - 2007)
+% Michael Fladischer (2012-2014)
+%
+% Das Dokument lässt sich am besten mit "latexmk" bauen:
+% http://www.phys.psu.edu/~collins/software/latexmk-jcc/
+%
+% Die genutzten LaTeX-Packages sind alle Bestandteil der TeXlive Distribution die mit Debian (Squeeze) ausgeliefert wird.
+% Für eine bequeme Installation unter Debian genügt es, folgende Zeile als "root" auszuführen:
+%
+% aptitude install -R latexmk texlive-base texlive-bibtex-extra texlive-binaries texlive-common texlive-fonts-extra texlive-fonts-recommended \
+%  texlive-formats-extra texlive-generic-extra texlive-generic-recommended texlive-humanities texlive-lang-german texlive-latex-base texlive-latex-extra \
+%  texlive-latex-recommended texlive-latex3 texlive-math-extra texlive-pictures texlive-plain-extra texlive-pstricks texlive-publishers texlive-science \
+%  latex-beamer
+%
+% Alle .tex Dateien sind für den vim Editor ausgelegt und enthalten Modeline-Anweisungen zur besseren Darstellung.
+% 
+% Patches zur Verbesserung von Fehlern, zur Optimierung oder für neue Features können gerne an <michael@fladi.at> geschickt werden.
+%------------------------------------
+
+% Dokumentenklasse %{{{
+\documentclass[
+    %DIV12,                                 % Satzspiegelparameter 12
+    %BCOR8mm,                               % Bindekorrektur 8mm
+    %headinclude,                           % Berücksichtigung der Kopfzeile
+                                            % bei der Ermittlung des Satzspiegels
+    12pt,                                   % Schriftgrösse 12pt
+    a4paper,                                % DIN A4
+    captions=oneline,                       % 
+    ngerman,
+    draft=true,                             % Muss entfernt werden, bevor Arbeit abgegeben wird!
+    bibliography=totoc,                     % Literaturverzeichniss automatisch im TOC einbinden
+    listof=totoc,                           % Listen automatisch in TOC einbinden
+    index=totoc]                            % Index automatisch in TOC einbinden
+    {scrreprt}                              % KOMA-Script für Reports
+%}}}
+
+% Generische Packages %{{{
+\usepackage[ngerman]{babel}
+\usepackage[ngerman]{translator}
+\usepackage[utf8]{inputenc}                 % Laden der UTF8-Eingabekodierung
+                                            % ACHTUNG: Dateien müssen UTF8 codiert sein!
+\usepackage[T1]{fontenc}                    % EC codierte Fonts
+\usepackage{ae}                             % PDF encoding Info
+\usepackage{palatino}                       % Brotschrift: Palationo
+\usepackage{helvet}                         % Serifenlose Schrift: Helvetica
+\usepackage[left]{eurosym}                  % EURO links
+\usepackage{paralist}                       % Beeinflussung von Listen
+\usepackage{tabularx}                       % Austreiben auf eine bestimmte Breite
+\usepackage{longtable}                      % Mehrseitige Tabellen
+\usepackage{ltxtable}                       % 'longtable' und 'tabularx'
+\usepackage{array}                          % Zeilenumbruch in 'p'-Spalten
+\usepackage{multirow}                       % Multiple Zeilen/Spalten in Tabellen
+% http://www.ctan.org/tex-archive/macros/latex/contrib/booktabs/
+% \toprule, \midrule und \bottomrule
+\usepackage{booktabs}
+% http://www.ctan.org/tex-archive/macros/latex/required/tools/
+\usepackage{dcolumn}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/blindtext/
+% Erzeugt Blindtext welcher beim Prüfen des Layouts behilflich sein kann
+\usepackage{blindtext}
+% http://ctan.org/tex-archive/macros/latex/contrib/siunitx/
+%\usepackage{siunitx}
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+\usepackage{color}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/xcolor/
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/wasysym/
+\usepackage[nointegrals]{wasysym}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/url/
+\usepackage[hyphens]{url}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+\usepackage{mdwlist}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/csquotes/
+\usepackage{csquotes}
+\usepackage{footnote}
+\usepackage{footmisc}
+\usepackage{gensymb}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{amsmath,amsthm,amssymb}
+%\usepackage[geometry]{ifsym}
+%\usepackage{scrhack}
+%}}}
+
+% Formatierung für Listings %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/listings/
+\usepackage{listings}
+% Definition für JavaScript
+\lstdefinelanguage{JavaScript}{
+    comment=[l]{//},
+    commentstyle=\color{green}\ttfamily,
+    identifierstyle=\color{black},
+    keywords={
+        attributes,
+        class,
+        classend,
+        do,
+        empty,
+        endif,
+        endwhile,
+        fail,
+        function,
+        functionend,
+        if,
+        implements,
+        in,
+        inherit,
+        inout,
+        not,
+        of,
+        operations,
+        out,
+        return,
+        set,
+        then,
+        types,
+        while,
+        use,
+    },
+    keywordstyle=\color{blue}\bfseries,
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+    ndkeywords={}
+    ndkeywordstyle=\color{yellow}\bfseries,
+    sensitive=false,
+    stringstyle=\color{red}\ttfamily,
+}
+\lstdefinelanguage{WKT}{
+    keywordstyle=\color{blue}\bfseries,
+    morekeywords={POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON},
+    morestring=[b](),
+    sensitive=true,
+}
+\lstdefinelanguage{XML}
+{
+    identifierstyle=\color{blue},
+    keywordstyle=\color{cyan},
+    morecomment=[s]{<?}{?>},
+    morekeywords={xmlns,version,type},
+    morestring=[b]",
+    morestring=[s]{>}{<},
+    showstringspaces=false,
+    stringstyle=\color{black},
+}
+
+% Sprachen laden
+\lstloadlanguages{HTML}
+% Format für Listings
+\lstset{
+    basicstyle=\ttfamily,
+    breaklines=true,
+    captionpos=b, % Beschriftungsposition am Ende des Listings
+    columns=fixed,
+    emphstyle=\bfseries\emph,
+    escapeinside={@}{@},
+    firstnumber=auto,
+    float,
+    frame=single, % einfacher Rahmen
+    identifierstyle=\ttfamily,
+    keywordstyle=,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\tiny,
+    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    showspaces=false,
+    showstringspaces=true,
+    showtabs=false,
+    stepnumber=2,
+    xleftmargin=8pt,
+}
+%}}}
+
+% Lokale Einstellungen %{{{
+\input{misc/settings}
+%}}}
+
+% Weiche für PDF/DVI %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/oberdiek/
+% Bitmaps stinken ja in der Druckstufe sowieso, besser TIKZ benutzen :-)
+% für Encapsulated-Postscript und PDFTeX Grafiken
+
+\usepackage[pdftex]{graphicx}
+\graphicspath{{images/pdf/}}
+\pdfcompresslevel=9
+\usepackage{rotating}
+%}}}
+
+% TIKZ - Coole Grafiken direkt in TeX zeichnen :-) %{{{
+% http://www.ctan.org/tex-archive/help/Catalogue/entries/pgf.html
+\usepackage{tikz}
+\usetikzlibrary{
+    arrows,
+    calc,
+    decorations,
+    decorations.pathreplacing,
+    fadings,
+    matrix,
+    mindmap,
+    patterns,
+    positioning,
+    shadows,
+    shapes,
+    trees,
+}
+% Globale Definitionen für TIKZ/PGF.
+\input{misc/tikz}
+%}}}
+
+% Überschriften und Zeilenabstand %{{{
+% http://www.ctan.org/tex-archive/macros/latex/required/tools/
+\usepackage{rotating}
+\usepackage{layout}
+
+% http://www.ctan.org/tex-archive/macros/latex/contrib/caption/
+% Überschriften formatieren
+\usepackage[font=small,format=hang,labelfont=bf]{caption}
+
+\renewcommand{\floatpagefraction}{.8}       % ,float page`, wenn diese mindestens
+                                            % 80% der Seite einnehmen
+                                            % default: .5
+\renewcommand{\textfraction}{.1}            % neben den Abbildungen, die ,h`ere, ,t`op und
+                                            % ,b`ottom plaziert werden, noch min. 10% Text
+                                            % default: .2
+\renewcommand{\topfraction}{.9}             % max. Anteil der Seite, die f\"{u}r Abbildungen,
+                                            % die ,t`op plaziert werden, verwendet wird
+                                            % default: .7
+\renewcommand{\bottomfraction}{.6}          % max. Anteil der Seite, die f\"{u}r Abbildungen,
+                                            % die ,b`ottom plaziert werden, verwendet wird
+                                            % default: .3
+%}}}
+
+% Silbentrennung %{{{
+\input{misc/hyphenation}
+%}}}
+
+% Index-Erstellung %{{{
+\usepackage{makeidx}
+\makeindex
+%}}}
+
+% PDF- und Hyperlink-Einstellungen %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/hyperref/
+\usepackage[plainpages=false,
+            pdfpagelabels,
+            pdftitle={\campusTitle},
+            pdfauthor={\campusAuthor},
+            pdfsubject={\campusType, \campusDate, \campusSubject},
+            pdfkeywords={\campusKeywords},
+            bookmarks=true,                 % Lesezeichen im 'pdf' analog zum Inhaltsverzeichnis,
+            bookmarksopen=true,             % Bookmarks anzeigen...
+            bookmarksnumbered=true,         % ...und nummerieren
+            hyperindex=true,                % Indexeinträge als Hyperlinks
+            colorlinks=false,               % Farbige Links
+            linkcolor=black,
+            urlcolor=black,
+            citecolor=black,
+            unicode=true,
+            breaklinks,
+            verbose
+]{hyperref}
+% http://www.ctan.org/tex-archive/macros/latex/contrib/breakurl/
+% Allow links to have line-breaks even when processed by dvips/ps2pdf.
+%\usepackage[hyphenbreaks]{breakurl}
+%}}}
+
+% APA style citations %{{{
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/apacite/
+\usepackage{apacite}
+%}}}
+
+% Glossaries %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/glossaries/
+\usepackage[toc,acronym,style=long,nonumberlist]{glossaries} 
+\makeglossaries
+\loadglsentries{misc/glossary}
+%}}}
+
+% TODO-Notes %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/todonotes/
+\usepackage[colorinlistoftodos,obeyDraft]{todonotes} 
+\reversemarginpar
+%}}}
+
+% Benutzerdefinierte Befehle %{{{
+\input{misc/commands}
+%}}}
+
+% Layout-Einstellungen %{{{
+
+% Numerierungstiefe der Kapitel
+\setcounter{secnumdepth}{3}%
+
+% Numerierungstiefe des Inhaltsverzeichnisses
+\setcounter{tocdepth}{3}%
+
+% Abstand vor und nach Gleitobjekten im Text [h]
+%\setlength{\intextsep}{12pt plus 2pt minus 2pt}    % default: {12pt plus 2pt minus 2pt}
+
+% Abstand zwischen Gleitobjekten oben oder unten und Text [tb]
+\setlength{\textfloatsep}{28pt plus 2pt minus 4pt}  % default: {20pt plus 2pt minus 4pt}
+
+
+%%%---- PARAGRAPH ---------------------
+\makeatletter
+\renewcommand{\paragraph}{%
+  \@startsection {paragraph}{4}{\z@}%
+  {-3.25ex plus-1ex minus-.2ex}{1sp}%
+  {\raggedsection \normalfont \sectfont \nobreak \size@paragraph \nobreak } % was: \reset@font \normalsize\bf
+} \makeatother
+
+%%%---- SUBPARAGRAPH ------------------
+\makeatletter
+\renewcommand{\subparagraph}{%
+  \@startsection {subparagraph}{5}{\parindent}%
+  {3.25ex \@plus 1ex \@minus .2ex}{-1em}%
+  {\raggedsection \normalfont \sectfont \nobreak \normalsize\bf \nobreak } % was: \size@subparagraph
+} \makeatother
+
+\clubpenalty = 10000
+\widowpenalty = 10000
+
+%%%------------------------------------
+%%%---- SEITENDEKLARATION -------------
+%%%------------------------------------
+\setlength{\textheight}{660pt}%
+\setlength{\voffset}{40pt}%
+\setlength{\hoffset}{20pt}%
+%\setlength{\footskip}{20pt}%
+%}}}
+
+% Kopf- und Fußzeilen %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% Redefine fetching of chapter name
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+% Page header
+\lhead{}
+\chead{}
+\rhead{\small\leftmark}
+% Page footer
+\lfoot{}
+\cfoot{\small\thepage}
+\rfoot{}
+%}}}
+
+% Smarte Referenzen %{{{
+% http://www.ctan.org/tex-archive/macros/latex/contrib/fancyref/
+\usepackage[german]{cleveref}
+\usepackage{nameref}
+%}}}
+
+% Haupt-Dokument %{{{
+
+\begin{document}
+
+% Titelseite
+\begin{titlepage}
+%\begin{sf}
+\begin{sffamily}
+\begin{center}
+\huge \campusType \\
+
+\vspace{2cm}%
+
+\campusTitle \\
+\vspace{3cm}%
+
+\begin{normalsize}
+
+ausgeführt am
+
+\begin{figure} [h!]
+    \centerline{\includegraphics[width=0.5\textwidth]{Campus02_Logo}}
+\end{figure}
+
+%\vspace{4.5cm}%
+
+Studiengang\\ 
+Informationstechnologien und Wirtschaftsinformatik\\
+
+\vspace{3.5cm}%
+
+%\begin{tabularx}{\linewidth}{ll}
+Von: \campusAuthor \\
+Pers. Kennz. \campusPersKnz
+%\end{tabularx}
+
+\vspace{3.5cm}%
+\end{normalsize}
+\end{center}
+
+\begin{tabularx}{0.9\linewidth}{Xc}
+\campusCity, am \campusDate & ............................. \\
+         & \campusAuthor\\
+\end{tabularx}
+
+\end{sffamily}
+\end{titlepage}
+
+% Ende der Titelseite
+\newpage
+
+% Liste der TODOS (nur sichtbar wenn die TODOs auch aktiviert sind, siehe Package todonotes)
+\listoftodos
+
+% Seitennummerierung auf Römisch setzen und bei Seite 1 beginnen
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\setlength{\parindent}{0em}
+
+% Ehrenwort
+\input{misc/Ehrenwort}
+
+% Danksagung
+\input{misc/Dank}
+
+% Kurzfassung / Abstract
+\input{misc/Kurzfassung}
+
+% Inhaltsverzeichnis
+\tableofcontents
+
+% Hauptteil
+\setlength{\parskip}{3ex plus0.5ex minus0.5ex}
+
+% Seitennummerierung auf Arabisch setzen und bei Seite 1 beginnen
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% Laden des eigentlichen Inhalts
+\input{misc/toc}
+
+% Anhang
+
+% Abkürzungen
+\clearpage
+\printglossaries
+
+% Abbildungen
+\clearpage
+\listoffigures
+
+% Tabellen
+\clearpage
+\listoftables
+
+% Listings
+\clearpage
+\lstlistoflistings
+
+% Literaturverzeichnis
+\clearpage
+\bibliographystyle{apacite}
+\bibliography{misc/literatur}
+
+% Index
+\clearpage
+\printindex
+
+% Das tiefgründige Zitat, optional :-)
+\input{misc/Zitat}%
+
+\end{document}
+%}}}
+
+% vim:filetype=tex foldmethod=marker autoindent expandtab shiftwidth=4 tw=160:
+% Local variables:
+% mode: latex
+% End:              
